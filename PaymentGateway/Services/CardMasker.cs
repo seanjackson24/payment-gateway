@@ -11,6 +11,7 @@ namespace PaymentGateway.Services
 		///</summary>
 		public static string MaskCardNumber(string unmaskedCardNumber)
 		{
+			// TODO: check for spaces and dashes
 			if (string.IsNullOrWhiteSpace(unmaskedCardNumber))
 			{
 				throw new ArgumentException("Cannot mask null or empty card number");
