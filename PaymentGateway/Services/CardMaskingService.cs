@@ -2,7 +2,11 @@ using System;
 
 namespace PaymentGateway.Services
 {
-	public class CardMasker
+	public interface ICardMaskingService
+	{
+		string MaskCardNumber(string unmaskedCardNumber);
+	}
+	public class CardMaskingService : ICardMaskingService
 	{
 		private const char maskCharacter = '*';
 		/// <summary>
@@ -11,7 +15,6 @@ namespace PaymentGateway.Services
 		public string MaskCardNumber(string unmaskedCardNumber)
 		{
 			unmaskedCardNumber = unmaskedCardNumber?.Replace(" ", "")?.Replace("-", "");
-			// TODO: check for spaces and dashes
 			if (string.IsNullOrWhiteSpace(unmaskedCardNumber))
 			{
 				throw new ArgumentException("Cannot mask null or empty card number");
@@ -21,7 +24,6 @@ namespace PaymentGateway.Services
 			{
 				throw new ArgumentException("Card number must be between 14 and 19 characters long");
 			}
-
 
 			string six = unmaskedCardNumber.Substring(0, 6);
 			string dot = new String(maskCharacter, unmaskedCardNumber.Length - 10);

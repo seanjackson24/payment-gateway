@@ -4,9 +4,9 @@ using PaymentGateway.Services;
 
 namespace PaymentGateway.Tests
 {
-	public class CardMaskServiceTests
+	public class CardMaskingServiceTests
 	{
-		private readonly CardMasker _cardMasker = new CardMasker();
+		private readonly CardMaskingService _cardMasker = new CardMaskingService();
 		private const string whitespace = " ";
 		private const string empty = "";
 
