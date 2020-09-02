@@ -1,30 +1,44 @@
 using System;
+using System.Threading.Tasks;
 using ServiceStack.Redis;
 
 namespace PaymentGateway.Services
 {
-	public interface IRedisService
-	{
-		void AcquireLock(string paymentId, Action lockAction);
-	}
-	public class RedisService : IRedisService
+	public class RedisLockActionService : ILockActionService
 	{
 		private readonly IRedisClientsManager _redisClientManager;
 
-		public RedisService(IRedisClientsManager redisClientManager)
+		public RedisLockActionService(IRedisClientsManager redisClientManager)
 		{
 			_redisClientManager = redisClientManager;
 		}
 
-		public void AcquireLock(string paymentId, Action lockAction)
+		public async Task<LockActionResult<TResult>> TryExecuteLockAction<TResult>(LockAction<TResult> lockAction)
 		{
-			TimeSpan timeOut = TimeSpan.FromSeconds(1);
-			using (IRedisClient redisClient = _redisClientManager.GetClient())
+			if (lockAction is null)
 			{
-				using (redisClient.AcquireLock(paymentId, timeOut))
+				throw new ArgumentNullException(nameof(lockAction));
+			}
+
+			if (string.IsNullOrWhiteSpace(lockAction.UniqueIdentifier))
+			{
+				throw new ArgumentException("Lock Action unique identifier cannot be null or whitespace", nameof(lockAction));
+			}
+
+			try
+			{
+				using (IRedisClient redisClient = _redisClientManager.GetClient())
 				{
-					lockAction();
+					using (redisClient.AcquireLock(lockAction.UniqueIdentifier, lockAction.Timeout))
+					{
+						var result = await lockAction.Action().ConfigureAwait(false);
+						return new LockActionResult<TResult>(lockAction.UniqueIdentifier, result);
+					}
 				}
+			}
+			catch (TimeoutException)
+			{
+				return new LockActionResult<TResult>(lockAction.UniqueIdentifier);
 			}
 		}
 	}
