@@ -6,38 +6,29 @@ using System.Threading.Tasks;
 
 namespace PaymentGateway.Services
 {
-	public class BankHttpClient
+	public class TestBankHttpClient
 	{
 		private readonly HttpClient _httpClient;
 
-		public BankHttpClient(HttpClient client)
+		public TestBankHttpClient(HttpClient client)
 		{
 			_httpClient = client;
 		}
 
-		public async Task<TResponse> RequestBank<TResponse>(string itemName, CancellationToken cancellationToken)
+		public async Task<TestBankPaymentResponse> RequestBankPayment(TestBankPaymentRequest request, CancellationToken cancellationToken)
 		{
-			// TODO: cache
-			if (string.IsNullOrWhiteSpace(itemName))
+			if (request is null)
 			{
-				return default(TResponse);
+				throw new ArgumentNullException(nameof(request));
 			}
 			string url = "TODO";
-			var requestUrl = new Uri(url + itemName.ToLowerInvariant());
-			var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
-			var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+			var httpRequest = new HttpRequestMessage(HttpMethod.Get, url);
+			var response = await _httpClient.SendAsync(httpRequest, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
 			using (var contentStream = await response.Content.ReadAsStreamAsync())
 			{
-				try
-				{
-					// return await as opposed to just return as we are inside a using statement
-					return await JsonSerializer.DeserializeAsync<TResponse>(contentStream, new JsonSerializerOptions(), cancellationToken);
-				}
-				catch (Exception ex)
-				{
-					return default(TResponse);
-				}
+				// return await as opposed to just return as we are inside a using statement
+				return await JsonSerializer.DeserializeAsync<TestBankPaymentResponse>(contentStream, new JsonSerializerOptions(), cancellationToken);
 			}
 		}
 	}

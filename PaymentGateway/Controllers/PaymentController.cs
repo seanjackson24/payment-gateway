@@ -18,12 +18,13 @@ namespace PaymentGateway.Controllers
 		}
 
 		//TODO: post or put?
-		[HttpPost]
-		public async Task<PaymentResponse> Post([FromBody] PaymentRequest request)
+		[HttpPut]
+		public async Task<PaymentResponse> Put([FromBody] PaymentRequest request)
 		{
 			if (!ModelState.IsValid)
 			{
-
+				// TODO
+				await Task.Delay(1);
 			}
 			// _paymentService.PerformPayment(request);
 			throw new NotImplementedException();

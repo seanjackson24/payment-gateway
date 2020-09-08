@@ -5,6 +5,9 @@ namespace PaymentGateway.Services
 		public string ActionIdentifier { get; private set; }
 		public TResult ActionResult { get; private set; }
 
+		/// <summary>
+		/// Whether or not the Lock Action was able to execute. Returns false if another Thread, Process, or Machine was holding on to the lock
+		/// </summary>
 		public bool WasSuccessful { get; private set; }
 
 		/// <summary>
