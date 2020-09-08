@@ -20,7 +20,7 @@ namespace PaymentGateway.Services
 
 		public async Task<BankResponse> PerformPayment(PaymentRequest request)
 		{
-			var bankRequest = new TestBankPaymentRequest(request.PaymentAmount, request.CardNumber, request.ExpiryDate, request.CVV, request.PaymentId);
+			var bankRequest = new TestBankPaymentRequest(request.PaymentAmountInCents, request.CardNumber, request.ExpiryDate, request.CVV, request.PaymentId);
 			var result = await _bankHttpClient.RequestBankPayment(bankRequest, CancellationToken.None);
 			return new BankResponse()
 			{

@@ -47,7 +47,7 @@ namespace PaymentGateway.Services
 				var payment = new Payment()
 				{
 					MaskedCardNumber = _cardMaskingService.MaskCardNumber(request.CardNumber),
-					PaymentAmount = request.PaymentAmount,
+					PaymentAmount = request.PaymentAmountInCents,
 					PaymentId = request.PaymentId,
 					TimestampUtc = _timeProvider.UtcNow(),
 					PaymentStatus = (int)bankResponse.Status, // TODO
