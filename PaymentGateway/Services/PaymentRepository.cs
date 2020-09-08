@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 
 namespace PaymentGateway.Services
 {
-
 	public interface IPaymentRepository
 	{
 		Task<bool> PaymentExists(string paymentId, CancellationToken cancellationToken);
@@ -12,30 +11,28 @@ namespace PaymentGateway.Services
 	}
 	public class PaymentRepository : IPaymentRepository
 	{
+		private readonly PaymentGatewayDbContext _context;
+
+		public PaymentRepository(PaymentGatewayDbContext context)
+		{
+			this._context = context;
+		}
+
 		public async Task<Payment> GetPaymentById(string paymentId)
 		{
-			using (var context = new PaymentGatewayDbContext())
-			{
-				return await context.Payments.FindAsync(paymentId);
-			}
+			return await _context.Payments.FindAsync(paymentId);
 		}
 
 		public async Task Insert(Payment payment, CancellationToken cancellationToken)
 		{
-			using (var context = new PaymentGatewayDbContext())
-			{
-				await context.Payments.AddAsync(payment, cancellationToken);
-				await context.SaveChangesAsync(cancellationToken);
-			}
+			await _context.Payments.AddAsync(payment, cancellationToken);
+			await _context.SaveChangesAsync(cancellationToken);
 		}
 
 		public async Task<bool> PaymentExists(string paymentId, CancellationToken cancellationToken)
 		{
-			using (var context = new PaymentGatewayDbContext())
-			{
-				var payment = await context.Payments.FindAsync(paymentId, cancellationToken);
-				return payment != null;
-			}
+			var payment = await _context.Payments.FindAsync(keyValues: new[] { paymentId }, cancellationToken: cancellationToken);
+			return payment != null;
 		}
 	}
 }

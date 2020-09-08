@@ -1,8 +1,9 @@
-﻿using System;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PaymentGateway.Models;
+using PaymentGateway.Services;
 
 namespace PaymentGateway.Controllers
 {
@@ -11,23 +12,24 @@ namespace PaymentGateway.Controllers
 	public class PaymentController : ControllerBase
 	{
 		private readonly ILogger<PaymentController> _logger;
+		private readonly IPaymentService _paymentService;
 
-		public PaymentController(ILogger<PaymentController> logger)
+		public PaymentController(ILogger<PaymentController> logger, IPaymentService paymentService)
 		{
 			_logger = logger;
+			_paymentService = paymentService;
 		}
 
 		//TODO: post or put?
 		[HttpPut]
-		public async Task<PaymentResponse> Put([FromBody] PaymentRequest request)
+		public async Task<PaymentResponse> Put([FromBody] PaymentRequest request, CancellationToken cancellationToken)
 		{
 			if (!ModelState.IsValid)
 			{
 				// TODO
 				await Task.Delay(1);
 			}
-			// _paymentService.PerformPayment(request);
-			throw new NotImplementedException();
+			return await _paymentService.PerformPayment(request, cancellationToken);
 		}
 	}
 }

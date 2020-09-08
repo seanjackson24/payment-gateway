@@ -8,6 +8,6 @@ namespace PaymentGateway.Models
 
 		public string PaymentStatus { get; set; }
 		public DateTime ExpiryDate { get; internal set; }
-		public object CardName { get; internal set; }
+		public string CardName { get; internal set; }
 	}
 }

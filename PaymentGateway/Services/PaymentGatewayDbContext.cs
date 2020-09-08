@@ -9,11 +9,6 @@ namespace PaymentGateway.Services
 		{
 		}
 
-		public PaymentGatewayDbContext()
-		{
-
-		}
-
 		public DbSet<Payment> Payments { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)

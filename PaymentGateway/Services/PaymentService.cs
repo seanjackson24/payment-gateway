@@ -6,55 +6,30 @@ using Microsoft.Extensions.Configuration;
 
 namespace PaymentGateway.Services
 {
-	public class PaymentService
+	public interface IPaymentService
 	{
-		private readonly ILockActionService _lockService;
-		private readonly IPaymentRepository _paymentRepository;
-		private readonly ICardMaskingService _cardMaskingService;
-		private readonly ITimeProvider _timeProvider;
+		Task<PaymentResponse> PerformPayment(PaymentRequest request, CancellationToken cancellationToken);
+	}
+	public class PaymentService : IPaymentService
+	{
 		private readonly IConfiguration _configuration;
+		private readonly ILockActionService _lockService;
 		private readonly IPaymentResponseFactory _paymentResponseFactory;
-		private readonly IBankService _bankService;
+		private readonly IPaymentActionService _paymentActionService;
 
-		public PaymentService(ILockActionService lockActionService, ICardMaskingService cardMaskingService, IPaymentRepository paymentRepository, IConfiguration configuration, IPaymentResponseFactory paymentResponseFactory, IBankService bankService, ITimeProvider timeProvider)
+		public PaymentService(ILockActionService lockActionService, IConfiguration configuration, IPaymentResponseFactory paymentResponseFactory, IPaymentActionService paymentActionService)
 		{
 			_lockService = lockActionService;
-			_cardMaskingService = cardMaskingService;
-			_paymentRepository = paymentRepository;
-			_configuration = configuration;
 			_paymentResponseFactory = paymentResponseFactory;
-			_bankService = bankService;
-			_timeProvider = timeProvider;
+			_configuration = configuration;
+			_paymentActionService = paymentActionService;
 		}
 		public async Task<PaymentResponse> PerformPayment(PaymentRequest request, CancellationToken cancellationToken)
 		{
-			// TODO:
+			// TODO action return type:
 			Func<Task<int>> action = async () =>
 			{
-				if (await _paymentRepository.PaymentExists(request.PaymentId, cancellationToken))
-				{
-					// return PaymentAlreadyExists; // TODO
-					return -1;
-				}
-				// Store in DB? - no - could do this with SQL server encryption if you wanted to add background process / recovery
-				// (cont.) which makes the entire thing more complicated as then you would need something like a failsafe URL etc
-
-				// determine bank
-				BankResponse bankResponse = await _bankService.PerformPaymentAsync(request);
-				// execute to bank
-
-				// update DB
-				var payment = new Payment()
-				{
-					MaskedCardNumber = _cardMaskingService.MaskCardNumber(request.CardNumber),
-					PaymentAmount = request.PaymentAmountInCents,
-					PaymentId = request.PaymentId,
-					TimestampUtc = _timeProvider.UtcNow(),
-					PaymentStatus = (int)bankResponse.Status, // TODO
-					BankReference = bankResponse.Reference
-				};
-				await _paymentRepository.Insert(payment, cancellationToken);
-				return await Task.FromResult(4);
+				return await _paymentActionService.PerformPayment(request, cancellationToken);
 			};
 
 			var timeout = TimeSpan.FromMilliseconds(_configuration.GetValue("PaymentLockTimeoutMilliseconds", 1000));

@@ -1,7 +1,9 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PaymentGateway.Services
 {
+	[Table("Payment")]
 	public class Payment
 	{
 		public string PaymentId { get; set; }
@@ -12,6 +14,6 @@ namespace PaymentGateway.Services
 		public string BankReference { get; set; }
 
 		public DateTime CardExpiryDate { get; set; }
-		public object CardName { get; internal set; }
+		public string CardName { get; internal set; }
 	}
 }
