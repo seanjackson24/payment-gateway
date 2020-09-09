@@ -1,5 +1,6 @@
 using System;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,8 +26,12 @@ namespace PaymentGateway.Services
 				throw new ArgumentNullException(nameof(request));
 			}
 			string url = _configuration.GetValue<string>("BankSimulator.Url");
-			var httpRequest = new HttpRequestMessage(HttpMethod.Get, url);
-			var response = await _httpClient.SendAsync(httpRequest, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+			// var httpRequest = new HttpRequestMessage(HttpMethod.Post, url);
+			// httpRequest.Content = new StringContent(JsonSerializer.Serialize(request));
+			// var response = await _httpClient.SendAsync(httpRequest, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+
+			var content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+			var response = await _httpClient.PostAsync(url, content, cancellationToken);
 
 			using (var contentStream = await response.Content.ReadAsStreamAsync())
 			{

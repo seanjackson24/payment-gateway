@@ -46,7 +46,7 @@ namespace PaymentGateway.Services
 				PaymentId = request.PaymentId,
 				TimestampUtc = _timeProvider.UtcNow(),
 				PaymentStatus = (int)bankResponse.Status, // TODO
-				BankReference = bankResponse.Reference
+				BankReference = bankResponse.Reference // TODO:
 			};
 			await _paymentRepository.Insert(payment, cancellationToken);
 			return await Task.FromResult(4);

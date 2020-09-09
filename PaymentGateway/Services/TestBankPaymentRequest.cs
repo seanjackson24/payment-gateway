@@ -8,6 +8,11 @@ namespace PaymentGateway.Services
 		public string CVV { get; set; }
 		public string Reference { get; set; }
 
+		public TestBankPaymentRequest()
+		{
+
+		}
+
 		public TestBankPaymentRequest(decimal amountInCents, string cardNumber, string expiry, string cVV, string reference)
 		{
 			AmountInCents = amountInCents;
