@@ -6,7 +6,7 @@ namespace PaymentGateway.Services
 {
 	public interface IPaymentActionService
 	{
-		Task<int> PerformPayment(PaymentRequest request, CancellationToken cancellationToken);
+		Task<PaymentActionResult> PerformPayment(PaymentRequest request, CancellationToken cancellationToken);
 	}
 	public class PaymentActionService : IPaymentActionService
 	{
@@ -23,13 +23,13 @@ namespace PaymentGateway.Services
 			_bankService = bankService;
 		}
 
-		public async Task<int> PerformPayment(PaymentRequest request, CancellationToken cancellationToken)
+		public async Task<PaymentActionResult> PerformPayment(PaymentRequest request, CancellationToken cancellationToken)
 		{
 			// TODO: cancellation token
 			if (await _paymentRepository.PaymentExists(request.PaymentId, cancellationToken))
 			{
-				// return PaymentAlreadyExists; // TODO
-				return -1;
+				throw new PaymentAlreadyExistsException();
+				// return PaymentActionResult.PaymentAlreadyExists();
 			}
 			// Store in DB? - no - could do this with SQL server encryption if you wanted to add background process / recovery
 			// (cont.) which makes the entire thing more complicated as then you would need something like a failsafe URL etc
@@ -50,7 +50,12 @@ namespace PaymentGateway.Services
 				CardExpiryDate = request.ExpiryDate,
 			};
 			await _paymentRepository.Insert(payment, cancellationToken);
-			return await Task.FromResult(4);
+
+			if (bankResponse.Status == PaymentStatus.Accepted)
+			{
+				return PaymentActionResult.Accepted();
+			}
+			return PaymentActionResult.Declined();
 		}
 	}
 }

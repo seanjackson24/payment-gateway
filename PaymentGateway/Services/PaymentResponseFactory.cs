@@ -5,7 +5,7 @@ namespace PaymentGateway.Services
 	public interface IPaymentResponseFactory
 	{
 		PaymentResponse CreateProcessingResponse(string paymentId);
-		PaymentResponse CreateResponse(string paymentId, int actionResult);
+		PaymentResponse CreateResponse(string paymentId, PaymentActionResult actionResult);
 	}
 	public class PaymentResponseFactory : IPaymentResponseFactory
 	{
@@ -14,18 +14,16 @@ namespace PaymentGateway.Services
 			return new PaymentResponse()
 			{
 				PaymentId = paymentId,
-				Status = PaymentStatus.Processing.ToString()
-
+				Status = PaymentStatusModel.Processing
 			};
 		}
 
-		public PaymentResponse CreateResponse(string paymentId, int actionResult)
+		public PaymentResponse CreateResponse(string paymentId, PaymentActionResult actionResult)
 		{
 			return new PaymentResponse()
 			{
-				// TODO:
 				PaymentId = paymentId,
-				Status = actionResult == 4 ? PaymentStatus.Accepted.ToString() : PaymentStatus.Declined.ToString()
+				Status = actionResult.WasPaymentAccepted ? PaymentStatusModel.Accepted : PaymentStatusModel.Declined
 			};
 		}
 	}

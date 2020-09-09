@@ -1,6 +1,8 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
 using PaymentGateway.Models;
 using PaymentGateway.Services;
@@ -21,14 +23,22 @@ namespace PaymentGateway.Controllers
 		}
 
 		[HttpPut]
-		public async Task<PaymentResponse> Put([FromBody] PaymentRequest request, CancellationToken cancellationToken)
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(StatusCodes.Status409Conflict)]
+		public async Task<ActionResult<PaymentResponse>> Put([FromBody] PaymentRequest request, CancellationToken cancellationToken)
 		{
-			if (!ModelState.IsValid)
+			try
 			{
-				// TODO
-				await Task.Delay(1);
+				var paymentResult = await _paymentService.PerformPayment(request, cancellationToken);
+				return paymentResult;
 			}
-			return await _paymentService.PerformPayment(request, cancellationToken);
+			catch (PaymentAlreadyExistsException)
+			{
+				var modelState = new ModelStateDictionary();
+				modelState.AddModelError(nameof(request.PaymentId), "A payment with this unique ID already exists");
+				return Conflict(modelState);
+			}
 		}
 	}
 }

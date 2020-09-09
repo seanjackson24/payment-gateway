@@ -26,15 +26,14 @@ namespace PaymentGateway.Services
 		}
 		public async Task<PaymentResponse> PerformPayment(PaymentRequest request, CancellationToken cancellationToken)
 		{
-			// TODO action return type:
-			Func<Task<int>> action = async () =>
+			Func<Task<PaymentActionResult>> action = async () =>
 			{
 				return await _paymentActionService.PerformPayment(request, cancellationToken);
 			};
 
 			var timeout = TimeSpan.FromMilliseconds(_configuration.GetValue("PaymentLockTimeoutMilliseconds", 1000));
 			var maxAge = TimeSpan.FromMilliseconds(_configuration.GetValue("PaymentLockMaxAgeMilliseconds", 1000 * 60 * 60 * 24));
-			var lockAction = new LockAction<int>("Payment_" + request.PaymentId, timeout, maxAge, action);
+			var lockAction = new LockAction<PaymentActionResult>("Payment_" + request.PaymentId, timeout, maxAge, action);
 			var result = await _lockService.TryExecuteLockAction(lockAction);
 			if (!result.WasSuccessful)
 			{

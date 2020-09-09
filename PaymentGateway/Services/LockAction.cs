@@ -7,7 +7,6 @@ namespace PaymentGateway.Services
 	{
 		public string UniqueIdentifier { get; private set; }
 
-		// TODO: should we force it to be a task?
 		public Func<Task<TResult>> Action { get; private set; }
 
 		/// <summary>

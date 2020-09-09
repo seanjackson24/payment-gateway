@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PaymentGateway.Models;
@@ -20,13 +21,14 @@ namespace PaymentGateway.Controllers
 		}
 
 		[HttpGet]
-		public Task<PaymentRetrievalResponse> Index([FromBody] PaymentRetrievalRequest request)
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		public async Task<ActionResult<PaymentRetrievalResponse>> Index([FromBody] PaymentRetrievalRequest request)
 		{
-			var result = _paymentRetrievalService.GetPaymentInformation(request.PaymentId);
+			var result = await _paymentRetrievalService.GetPaymentInformation(request.PaymentId);
 			if (result == null)
 			{
-				// TODO: different return types
-				// return NotFound();
+				return NotFound();
 			}
 			return result;
 		}

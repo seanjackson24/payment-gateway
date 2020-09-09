@@ -29,8 +29,7 @@ namespace PaymentGateway.Services
 					ExpiryDate = payment.CardExpiryDate,
 				};
 			}
-			return null; // TODO: return type for when payment retrieval not found
-						 //  return new PaymentRetrievalResponse() { PaymentStatus = PaymentStatus.NotFound };
+			return null;
 		}
 	}
 }
