@@ -4,6 +4,5 @@ namespace PaymentGateway.Models
 	{
 		public string BankReference { get; set; }
 		public PaymentStatus Status { get; set; }
-		public string Reference { get; set; }
 	}
 }

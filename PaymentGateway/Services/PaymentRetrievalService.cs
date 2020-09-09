@@ -35,11 +35,10 @@ namespace PaymentGateway.Services
 					PaymentStatus = payment.PaymentStatus.ToString(), // TODO
 					MaskedCardNumber = payment.MaskedCardNumber,
 					ExpiryDate = payment.CardExpiryDate,
-					CardName = payment.CardName
 				};
 			}
 			return null; // TODO: return type
-						 // return new PaymentRetrievalResponse() { PaymentStatus = PaymentStatus.NotFound };
+						 //  return new PaymentRetrievalResponse() { PaymentStatus = PaymentStatus.NotFound };
 		}
 	}
 }

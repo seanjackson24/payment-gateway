@@ -33,11 +33,14 @@ namespace PaymentGateway.Services
 			var content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
 			var response = await _httpClient.PostAsync(url, content, cancellationToken);
 
-			using (var contentStream = await response.Content.ReadAsStreamAsync())
+			// using (var content = await response.Content.ReadAsStringAsync())
+			var result = await response.Content.ReadAsStringAsync();
+			// return await as opposed to just return as we are inside a using statement
+			var options = new JsonSerializerOptions
 			{
-				// return await as opposed to just return as we are inside a using statement
-				return await JsonSerializer.DeserializeAsync<TestBankPaymentResponse>(contentStream, new JsonSerializerOptions(), cancellationToken);
-			}
+				PropertyNameCaseInsensitive = true,
+			};
+			return JsonSerializer.Deserialize<TestBankPaymentResponse>(result, options);
 		}
 	}
 }

@@ -7,7 +7,6 @@ namespace PaymentGateway.Models
 		public string MaskedCardNumber { get; set; }
 
 		public string PaymentStatus { get; set; }
-		public DateTime ExpiryDate { get; internal set; }
-		public string CardName { get; internal set; }
+		public string ExpiryDate { get; set; }
 	}
 }

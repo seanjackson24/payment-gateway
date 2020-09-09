@@ -33,7 +33,8 @@ namespace PaymentGateway.Services
 			};
 
 			var timeout = TimeSpan.FromMilliseconds(_configuration.GetValue("PaymentLockTimeoutMilliseconds", 1000));
-			var lockAction = new LockAction<int>(request.PaymentId, timeout, action);
+			var maxAge = TimeSpan.FromMilliseconds(_configuration.GetValue("PaymentLockMaxAgeMilliseconds", 1000 * 60 * 60 * 24));
+			var lockAction = new LockAction<int>("Payment_" + request.PaymentId, timeout, maxAge, action);
 			var result = await _lockService.TryExecuteLockAction(lockAction);
 			if (!result.WasSuccessful)
 			{

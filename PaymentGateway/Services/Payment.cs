@@ -12,8 +12,6 @@ namespace PaymentGateway.Services
 		public DateTime TimestampUtc { get; set; }
 		public int PaymentStatus { get; set; }
 		public string BankReference { get; set; }
-
-		public DateTime CardExpiryDate { get; set; }
-		public string CardName { get; internal set; }
+		public string CardExpiryDate { get; set; }
 	}
 }
