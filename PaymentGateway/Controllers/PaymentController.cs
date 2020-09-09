@@ -20,7 +20,6 @@ namespace PaymentGateway.Controllers
 			_paymentService = paymentService;
 		}
 
-		//TODO: post or put?
 		[HttpPut]
 		public async Task<PaymentResponse> Put([FromBody] PaymentRequest request, CancellationToken cancellationToken)
 		{
