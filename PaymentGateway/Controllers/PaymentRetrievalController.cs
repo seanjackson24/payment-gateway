@@ -1,9 +1,8 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using PaymentGateway.Models;
-using PaymentGateway.Services;
+using PaymentGateway.Common.Models;
+using PaymentGateway.Domain.Services;
 
 namespace PaymentGateway.Controllers
 {
@@ -11,12 +10,10 @@ namespace PaymentGateway.Controllers
 	[Route("[controller]")]
 	public class PaymentRetrievalController : ControllerBase
 	{
-		private readonly ILogger<PaymentRetrievalController> _logger;
 		private readonly IPaymentRetrievalService _paymentRetrievalService;
 
-		public PaymentRetrievalController(ILogger<PaymentRetrievalController> logger, IPaymentRetrievalService paymentRetrievalService)
+		public PaymentRetrievalController(IPaymentRetrievalService paymentRetrievalService)
 		{
-			_logger = logger;
 			_paymentRetrievalService = paymentRetrievalService;
 		}
 

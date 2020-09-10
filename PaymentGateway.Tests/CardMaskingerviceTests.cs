@@ -1,6 +1,6 @@
 using System;
+using PaymentGateway.Domain.Services;
 using Xunit;
-using PaymentGateway.Services;
 
 namespace PaymentGateway.Tests
 {

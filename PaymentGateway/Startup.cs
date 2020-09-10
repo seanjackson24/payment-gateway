@@ -4,7 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using PaymentGateway.Services;
+using PaymentGateway.Domain.Factories;
+using PaymentGateway.Domain.Services;
+using PaymentGateway.Domain.TestBank;
 using ServiceStack.Redis;
 
 namespace PaymentGateway
@@ -49,9 +51,7 @@ namespace PaymentGateway
 		{
 			if (env.IsDevelopment())
 			{
-				app.UseExceptionHandler("/error");
-
-				// app.UseDeveloperExceptionPage();
+				app.UseDeveloperExceptionPage();
 			}
 			else
 			{

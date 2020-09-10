@@ -4,8 +4,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
-using PaymentGateway.Models;
-using PaymentGateway.Services;
+using PaymentGateway.Common.Models;
+using PaymentGateway.Domain.Exceptions;
+using PaymentGateway.Domain.Services;
 
 namespace PaymentGateway.Controllers
 {
@@ -34,6 +35,7 @@ namespace PaymentGateway.Controllers
 			}
 			catch (PaymentAlreadyExistsException)
 			{
+				_logger.LogWarning("A payment with ID {paymentId} already exists", request.PaymentId);
 				var modelState = new ModelStateDictionary();
 				modelState.AddModelError(nameof(request.PaymentId), "A payment with this unique ID already exists");
 				return Conflict(modelState);

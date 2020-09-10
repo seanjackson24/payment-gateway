@@ -1,7 +1,6 @@
 using System;
-using Xunit;
+using PaymentGateway.Domain.Services;
 using Xunit.Abstractions;
-using PaymentGateway.Services;
 using ServiceStack.Redis;
 
 namespace PaymentGateway.Tests
