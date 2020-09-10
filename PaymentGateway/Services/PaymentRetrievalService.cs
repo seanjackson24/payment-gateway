@@ -24,7 +24,7 @@ namespace PaymentGateway.Services
 			{
 				return new PaymentRetrievalResponse()
 				{
-					PaymentStatus = payment.PaymentStatus.ToString(), // TODO
+					PaymentStatus = payment.PaymentStatus.ToString(),
 					MaskedCardNumber = payment.MaskedCardNumber,
 					ExpiryDate = payment.CardExpiryDate,
 				};

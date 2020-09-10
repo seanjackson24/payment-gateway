@@ -25,20 +25,13 @@ namespace PaymentGateway.Services
 
 		public async Task<PaymentActionResult> PerformPayment(PaymentRequest request, CancellationToken cancellationToken)
 		{
-			// TODO: cancellation token
 			if (await _paymentRepository.PaymentExists(request.PaymentId, cancellationToken))
 			{
 				throw new PaymentAlreadyExistsException();
-				// return PaymentActionResult.PaymentAlreadyExists();
 			}
-			// Store in DB? - no - could do this with SQL server encryption if you wanted to add background process / recovery
-			// (cont.) which makes the entire thing more complicated as then you would need something like a failsafe URL etc
 
-			// determine bank
 			BankResponse bankResponse = await _bankService.PerformPaymentAsync(request);
-			// execute to bank
 
-			// update DB
 			var payment = new Payment()
 			{
 				MaskedCardNumber = _cardMaskingService.MaskCardNumber(request.CardNumber),
@@ -49,13 +42,9 @@ namespace PaymentGateway.Services
 				BankReference = bankResponse.BankReference,
 				CardExpiryDate = request.ExpiryDate,
 			};
-			await _paymentRepository.Insert(payment, cancellationToken);
+			await _paymentRepository.Insert(payment);
 
-			if (bankResponse.Status == PaymentStatus.Accepted)
-			{
-				return PaymentActionResult.Accepted();
-			}
-			return PaymentActionResult.Declined();
+			return new PaymentActionResult(bankResponse.Status == PaymentStatus.Accepted);
 		}
 	}
 }

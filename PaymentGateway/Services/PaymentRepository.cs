@@ -6,7 +6,7 @@ namespace PaymentGateway.Services
 	public interface IPaymentRepository
 	{
 		Task<bool> PaymentExists(string paymentId, CancellationToken cancellationToken);
-		Task Insert(Payment payment, CancellationToken cancellationToken);
+		Task Insert(Payment payment);
 		Task<Payment> GetPaymentById(string paymentId);
 	}
 	public class PaymentRepository : IPaymentRepository
@@ -23,10 +23,10 @@ namespace PaymentGateway.Services
 			return await _context.Payments.FindAsync(paymentId);
 		}
 
-		public async Task Insert(Payment payment, CancellationToken cancellationToken)
+		public async Task Insert(Payment payment)
 		{
-			await _context.Payments.AddAsync(payment, cancellationToken);
-			await _context.SaveChangesAsync(cancellationToken);
+			await _context.Payments.AddAsync(payment);
+			await _context.SaveChangesAsync();
 		}
 
 		public async Task<bool> PaymentExists(string paymentId, CancellationToken cancellationToken)

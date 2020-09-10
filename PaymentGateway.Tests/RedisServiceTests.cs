@@ -46,7 +46,6 @@ namespace PaymentGateway.Tests
 		// 								Thread.Sleep(2000);
 		// 								_ouput.WriteLine("Success!");
 		// 							};
-		// 			// TODO: consider API design for this function
 		// 			_redisService.TryAcquireLock("test3", action);
 		// 		}));
 		// 	}
