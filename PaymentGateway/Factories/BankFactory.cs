@@ -1,21 +1,29 @@
 using System;
-using PaymentGateway.Models;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace PaymentGateway.Factories
+namespace PaymentGateway.Services
 {
-	public class BankFactory
+	public interface IBankFactory
 	{
-		public Bank GetBankFromCardNumber(string cardNumber)
+		IBank GetBankByName(string bankName);
+	}
+	public class BankFactory : IBankFactory
+	{
+		private readonly IServiceProvider _serviceProvider;
+
+		public BankFactory(IServiceProvider serviceProvider)
 		{
-			switch (cardNumber)
+			_serviceProvider = serviceProvider;
+		}
+
+		public IBank GetBankByName(string bankName)
+		{
+			switch (bankName)
 			{
-				case "4111111111111111":
-					return new Bank()
-					{
-						Name = "Imaginary Bank"
-					};
+				case Banks.TestBank:
+					return _serviceProvider.GetService<TestBank>();
 				default:
-					throw new NotImplementedException();
+					throw new BankNotFoundException($"No Bank known by name ${bankName}");
 			}
 		}
 	}

@@ -16,9 +16,8 @@ namespace PaymentGateway.Tests
 		public RedisServiceTests(ITestOutputHelper output)
 		{
 			_ouput = output;
-			var pool = new RedisManagerPool(redisConnectionString);
-			_pool = pool;
-			_redisService = new RedisLockActionService(pool);
+			_pool = new RedisManagerPool(redisConnectionString);
+			_redisService = new RedisLockActionService(new RedisManagerPool(redisConnectionString));
 		}
 
 		public void Dispose()
