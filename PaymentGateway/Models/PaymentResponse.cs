@@ -7,7 +7,6 @@ namespace PaymentGateway.Models
 		/// </summary>
 		public string PaymentId { get; set; }
 
-
 		public PaymentStatusModel Status { get; set; }
 	}
 }

@@ -1,4 +1,3 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using PaymentGateway.Models;
@@ -22,6 +21,7 @@ namespace PaymentGateway.Services
 		{
 			var bankRequest = new TestBankPaymentRequest(request.PaymentAmountInCents, request.CardNumber, request.ExpiryDate, request.CVV, request.PaymentId);
 			var result = await _bankHttpClient.RequestBankPayment(bankRequest, CancellationToken.None);
+
 			return new BankResponse()
 			{
 				BankReference = result.BankReference,

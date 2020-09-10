@@ -30,8 +30,7 @@ namespace PaymentGateway.Controllers
 		{
 			try
 			{
-				var paymentResult = await _paymentService.PerformPayment(request, cancellationToken);
-				return paymentResult;
+				return await _paymentService.PerformPayment(request, cancellationToken);
 			}
 			catch (PaymentAlreadyExistsException)
 			{
