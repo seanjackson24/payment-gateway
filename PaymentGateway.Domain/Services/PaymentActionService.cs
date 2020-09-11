@@ -56,7 +56,7 @@ namespace PaymentGateway.Domain.Services
 			catch (Exception ex)
 			{
 				// if we perform the payment, but error afterwards, we still want to respond to the client, but log it
-				_logger.LogCritical(ex, "Unable to write payment information to database", request.PaymentId, bankResponse);
+				_logger.LogCritical(ex, "Unable to write payment information to database after payment has been taken", request.PaymentId, bankResponse);
 			}
 
 			return new PaymentActionResult(bankResponse.Status == PaymentStatus.Accepted);

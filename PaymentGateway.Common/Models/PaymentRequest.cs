@@ -34,6 +34,7 @@ namespace PaymentGateway.Common.Models
 
 		[Required]
 		[Range(1, int.MaxValue)]
+		// TODO: int
 		public decimal PaymentAmountInCents { get; }
 
 		[Required]
