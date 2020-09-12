@@ -1,7 +1,55 @@
+using System.Threading.Tasks;
+
 namespace PaymentGateway.Tests.IntegrationTests
 {
 	public class EndToEndTests
 	{
+		private async Task StartRedis()
+		{
+			// docker start 650b780b58a6
+
+			await Task.Delay(1000);
+		}
+		private async Task StopRedis()
+		{
+			// docker stop 650b780b58a6
+
+			await Task.Delay(1000);
+		}
+
+
+		private async Task StartDatabase()
+		{
+			// docker start 4b4e77063ce6
+
+			await Task.Delay(1000);
+		}
+		private async Task StopDatabase()
+		{
+			// docker stop 4b4e77063ce6
+
+			await Task.Delay(1000);
+		}
+
+
+
+		private async Task StartBank()
+		{
+			// dotnet run
+
+			await Task.Delay(1000);
+		}
+		private async Task StopBank()
+		{
+			// TODO: put it in container
+
+			await Task.Delay(1000);
+		}
+
+
+
+
+
 		// happy path: accepted
 		// happy path: declined
 		// happy path: request payment
