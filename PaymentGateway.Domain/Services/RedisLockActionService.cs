@@ -30,6 +30,7 @@ namespace PaymentGateway.Domain.Services
 			{
 				using (IRedisClient redisClient = _redisClientManager.GetClient())
 				{
+					// using (redisClient.AcquireLock(lockAction.UniqueIdentifier, lockAction.MaxAge))
 					using (redisClient.AcquireEnhancedLock(lockAction.UniqueIdentifier, lockAction.Timeout, lockAction.MaxAge))
 					{
 						var result = await lockAction.Action().ConfigureAwait(false);

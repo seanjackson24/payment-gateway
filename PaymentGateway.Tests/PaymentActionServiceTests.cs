@@ -50,7 +50,7 @@ namespace PaymentGateway.Tests
 			_bankService.Setup(x => x.PerformPaymentAsync(request)).Returns(Task.FromResult(new BankResponse() { Status = PaymentStatus.Accepted }));
 
 			var result = await _service.PerformPayment(request, CancellationToken.None);
-			Assert.Equal(true, result.WasPaymentAccepted);
+			Assert.True(result.WasPaymentAccepted);
 		}
 
 		[Fact]
@@ -62,7 +62,7 @@ namespace PaymentGateway.Tests
 			_bankService.Setup(x => x.PerformPaymentAsync(request)).Returns(Task.FromResult(new BankResponse() { Status = PaymentStatus.Declined }));
 
 			var result = await _service.PerformPayment(request, CancellationToken.None);
-			Assert.Equal(false, result.WasPaymentAccepted);
+			Assert.False(result.WasPaymentAccepted);
 		}
 
 		[Fact]
