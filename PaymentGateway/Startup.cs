@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json.Converters;
 using PaymentGateway.Domain.Factories;
 using PaymentGateway.Domain.Services;
 using PaymentGateway.Domain.TestBank;
@@ -23,7 +24,8 @@ namespace PaymentGateway
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddControllers().AddNewtonsoftJson();
+			services.AddControllers()
+				.AddNewtonsoftJson(opts => opts.SerializerSettings.Converters.Add(new StringEnumConverter()));
 			services.AddSingleton<IRedisClientsManager>(c => new RedisManagerPool(Configuration.GetConnectionString("Redis")));
 			services.AddHttpClient<TestBankHttpClient>();
 			services.AddDbContext<PaymentGatewayDbContext>(options =>
