@@ -1,52 +1,22 @@
 using System.Threading.Tasks;
+using Xunit;
+using Xunit.Abstractions;
 
 namespace PaymentGateway.Tests.IntegrationTests
 {
-	public class EndToEndTests
+	public class EndToEndTests : EndToEndTestBase
 	{
-		private async Task StartRedis()
+		public EndToEndTests(ITestOutputHelper output) : base(output)
 		{
-			// docker start PaymentGateway.Redis
-
-			await Task.Delay(1000);
-		}
-		private async Task StopRedis()
-		{
-			// docker stop PaymentGateway.Redis
-
-			await Task.Delay(1000);
 		}
 
-
-		private async Task StartDatabase()
+		[Fact]
+		public async Task StartAsync()
 		{
-			// docker start PaymentGateway.Database
-
-			await Task.Delay(1000);
+			_output.WriteLine("hello");
+			await StartRedis();
+			await StopRedis();
 		}
-		private async Task StopDatabase()
-		{
-			// docker stop PaymentGateway.Database
-
-			await Task.Delay(1000);
-		}
-
-
-
-		private async Task StartBank()
-		{
-			// docker start PaymentGateway.BankSimulator
-
-			await Task.Delay(1000);
-		}
-		private async Task StopBank()
-		{
-			// docker stop PaymentGateway.BankSimulator
-
-			await Task.Delay(1000);
-		}
-
-
 
 
 

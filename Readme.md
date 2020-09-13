@@ -75,7 +75,7 @@ As an example using the command-line utility [httpie] (https://httpie.org/), you
 -   Retrieve a payment:
     > http --verify=no --timeout=300 GET https://localhost:5001/PaymentRetrieval PaymentId=4cf50653-bdfd-4af1-8825-e4b2dc57640b
 
-# Payment Request Fields:
+## Payment Request Fields:
 
 -   PaymentId: This is a unique identifier for your payment. I recommend using a Guid for this.
 -   CardNumber: The bank simulator will accept 4111111111111111, and decline all other valid credit card numbers.
@@ -93,6 +93,10 @@ As an example using the command-line utility [httpie] (https://httpie.org/), you
 From the root, in you can build the Bank Simulator and the main Payment Gateway API by running:
 
 > docker build --pull --rm -f "BankSimulator.Dockerfile" -t paymentgateway.banksimulator:latest "."
+
+> docker run -d -p 5003:80 --name PaymentGateway.BankSimulator paymentgateway.banksimulator:latest
+
+> docker start PaymentGateway.BankSimulator
 
 > docker build --pull --rm -f "Dockerfile" -t paymentgateway:latest "."
 
