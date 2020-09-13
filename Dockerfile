@@ -6,13 +6,13 @@ EXPOSE 80
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
-WORKDIR /src
-COPY ["PaymentGateway/PaymentGateway.csproj", "PaymentGateway/"]
-COPY ["PaymentGateway.Domain/PaymentGateway.Domain.csproj", "PaymentGateway.Domain/"]
-COPY ["PaymentGateway.Common/PaymentGateway.Common.csproj", "PaymentGateway.Common/"]
+WORKDIR /
+COPY ["./PaymentGateway/PaymentGateway.csproj", "PaymentGateway/"]
+COPY ["./PaymentGateway.Domain/PaymentGateway.Domain.csproj", "PaymentGateway.Domain/"]
+COPY ["./PaymentGateway.Common/PaymentGateway.Common.csproj", "PaymentGateway.Common/"]
 RUN dotnet restore "PaymentGateway/PaymentGateway.csproj"
 COPY . .
-WORKDIR "/src/PaymentGateway"
+WORKDIR "/PaymentGateway"
 RUN dotnet build "PaymentGateway.csproj" -c Release -o /app/build
 
 FROM build AS publish
