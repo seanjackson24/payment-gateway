@@ -18,9 +18,9 @@ namespace PaymentGateway.Domain.Services
 		private readonly ICardMaskingService _cardMaskingService;
 		private readonly ITimeProvider _timeProvider;
 		private readonly IBankService _bankService;
-		private readonly ILogger _logger;
+		private readonly ILogger<PaymentActionService> _logger;
 
-		public PaymentActionService(IPaymentRepository paymentRepository, ICardMaskingService cardMaskingService, ITimeProvider timeProvider, IBankService bankService, ILogger logger)
+		public PaymentActionService(IPaymentRepository paymentRepository, ICardMaskingService cardMaskingService, ITimeProvider timeProvider, IBankService bankService, ILogger<PaymentActionService> logger)
 		{
 			_paymentRepository = paymentRepository;
 			_cardMaskingService = cardMaskingService;

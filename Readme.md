@@ -17,15 +17,17 @@ A Payment Gateway API to interface between merchants and banks
     `dotnet run`
     This will launch the project on https://localhost:5003
 -   Start up a redis instance, or clone the official redis docker image and start it:
-    `TODO`
-    `docker start PaymentGateway.Redis`
+    `docker run --name paymentgateway.redis -p 6379:6379 -d redis`
+    `docker start paymentgateway.redis`
 -   Start up a SQL Server instance, or clone a SQL Server docker image and run:
-    `TODO`
-    `docker start PaymentGateway.Database`
+    `docker run --name paymentgateway.database -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=yourStrong!Password' -p 1433:1433 -d mcr.microsoft.com/mssql/server:2017-latest`
+    `docker start paymentgateway.database`
 -   Prepare the database by running the script on the database:
     `scripts/Scaffold Database.sql`
+    You can either connect to the database using something like SQL Server Management Studio, or use sqlcmd directly on the container:
+    `docker exec -it paymentgateway.database /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P yourStrong!Password`
 -   Populate the config files:
-    ` "ConnectionStrings": { "PaymentGatewayDatabase": "", "Redis": "" }, "BankName": "Test Bank", "PaymentLockTimeoutMilliseconds": 1000, "PaymentLockMaxAgeMilliseconds": 86400000, "BankSimulator.Url": "https://localhost:5003/BankPayment"`
+    ` "ConnectionStrings": { "PaymentGatewayDatabase": "<your connection string>", "Redis": "<your redis connection string>" }, "BankSimulator.Url": "https://localhost:5003/BankPayment"`
 
 # Run API Backend:
 
@@ -39,12 +41,13 @@ A Payment Gateway API to interface between merchants and banks
 As an example using the command-line utility httpie (https://httpie.org/), you can simulate the below samples by running the commands:
 
 -   Accepted payment:
-    `http --verify=no --timeout=300 PUT https://localhost:5001/Payment PaymentId=10411bb3-d53d-440e-974c-ae65f4de559d CardNumber=4111111111111111 ExpiryDate=0222 CVV=123 PaymentAmount:=23 CurrencyCode=GBP`
+    `http --verify=no --timeout=300 PUT https://localhost:5001/Payment PaymentId=10411bb3-d53d-440e-974c-ae65f4de559d CardNumber=4111111111111111 ExpiryDate=0222 CVV=123 PaymentAmountInCents:=23.0 CurrencyCode=GBP`
 -   Declined Payment:
-    `http --verify=no --timeout=300 PUT https://localhost:5001/Payment PaymentId=4cf50653-bdfd-4af1-8825-e4b2dc57640b CardNumber=4111111111111112 ExpiryDate=0222 CVV=123 PaymentAmount:=23 CurrencyCode=GBP`
+    `http --verify=no --timeout=300 PUT https://localhost:5001/Payment PaymentId=4cf50653-bdfd-4af1-8825-e4b2dc57640b CardNumber=5105105105105100 ExpiryDate=0222 CVV=123 PaymentAmountInCents:=23 CurrencyCode=GBP`
 -   Retrieve a payment:
     `http --verify=no --timeout=300 GET https://localhost:5001/PaymentRetrieval PaymentId=4cf50653-bdfd-4af1-8825-e4b2dc57640b`
 
+Note: the bank simulator will accept 4111111111111111, and decline all other valid credit card numbers.
 Payment ID: This is a unique identifier for your payment. I recommend using a Guid for this.
 
 # Alternatively, use the API Client

@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PaymentGateway.BankSimulator.Models;
 
 namespace PaymentGateway.BankSimulator.Controllers
@@ -9,7 +8,6 @@ namespace PaymentGateway.BankSimulator.Controllers
 	public class BankPaymentController : ControllerBase
 	{
 		private const string AcceptedCardNumber = "4111111111111111";
-		private const string DeclinedCardNumber = "4111111111111112";
 
 		[HttpPost]
 		public BankResponseModel Post([FromBody] BankRequestModel request)
@@ -18,10 +16,8 @@ namespace PaymentGateway.BankSimulator.Controllers
 			{
 				case AcceptedCardNumber:
 					return BankResponseModel.Accepted();
-				case DeclinedCardNumber:
-					return BankResponseModel.Declined();
 				default:
-					throw new NotImplementedException();
+					return BankResponseModel.Declined();
 			}
 		}
 	}

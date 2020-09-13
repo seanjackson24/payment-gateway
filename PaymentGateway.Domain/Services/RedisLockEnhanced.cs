@@ -5,6 +5,7 @@ using ServiceStack.Text;
 
 namespace PaymentGateway.Domain.Services
 {
+	// modified from https://raw.githubusercontent.com/ServiceStack/ServiceStack.Redis/v5.9.2/src/ServiceStack.Redis/RedisLock.cs
 	public class RedisLockEnhanced
 		: IDisposable
 	{

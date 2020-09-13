@@ -5,7 +5,7 @@ END
 GO
 
 use PaymentGateway
-IF NOT EXISTS (select * from INFORMATION_SCHEMA.TABLES where Name = "Payment")
+IF NOT EXISTS (select * from INFORMATION_SCHEMA.TABLES where Table_Name = "Payment")
 BEGIN
 	create table Payment (
 		PaymentId nvarchar(100) not null primary key,
@@ -14,8 +14,8 @@ BEGIN
 		PaymentStatus int not null,
 		BankReference nvarchar(100) not null,
 		CardExpiryDate nvarchar(5) not null,
-		TimestampUtc datetime2 not null,
-
+		CurrencyCode nvarchar(3) not null,
+		TimestampUtc datetime2 not null
 	)
 END
 GO

@@ -19,7 +19,7 @@ namespace PaymentGateway.Tests
 		private readonly Mock<ICardMaskingService> _cardMaskingService;
 		private readonly Mock<ITimeProvider> _timeProvider;
 		private readonly Mock<IBankService> _bankService;
-		private readonly Mock<ILogger> _logger;
+		private readonly Mock<ILogger<PaymentActionService>> _logger;
 
 		public PaymentActionServiceTests()
 		{
@@ -27,7 +27,7 @@ namespace PaymentGateway.Tests
 			_cardMaskingService = new Mock<ICardMaskingService>();
 			_timeProvider = new Mock<ITimeProvider>();
 			_bankService = new Mock<IBankService>();
-			_logger = new Mock<ILogger>();
+			_logger = new Mock<ILogger<PaymentActionService>>();
 			_service = new PaymentActionService(_paymentRespository.Object, _cardMaskingService.Object, _timeProvider.Object, _bankService.Object, _logger.Object);
 		}
 
