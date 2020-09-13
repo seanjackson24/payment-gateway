@@ -24,6 +24,7 @@ namespace PaymentGateway.Domain.Services
 			{
 				return new PaymentRetrievalResponse()
 				{
+					// TODO: enum get value
 					PaymentStatus = payment.PaymentStatus.ToString(),
 					MaskedCardNumber = payment.MaskedCardNumber,
 					ExpiryDate = payment.CardExpiryDate,

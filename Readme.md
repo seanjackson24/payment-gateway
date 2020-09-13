@@ -90,7 +90,7 @@ As an example using the command-line utility [httpie] (https://httpie.org/), you
 
 # docker
 
-From the root, in you can build the Bank Simulator and the main Payment Gateway API by running:
+From the root, in you can build the Bank Simulator by running:
 
 > docker build --pull --rm -f "BankSimulator.Dockerfile" -t paymentgateway.banksimulator:latest "."
 
@@ -98,7 +98,13 @@ From the root, in you can build the Bank Simulator and the main Payment Gateway 
 
 > docker start PaymentGateway.BankSimulator
 
+Similarly, you can also build the main API:
+
 > docker build --pull --rm -f "Dockerfile" -t paymentgateway:latest "."
+
+> docker run -d -p 5001:80 --name PaymentGateway.API paymentgateway:latest
+
+> docker start PaymentGateway.API
 
 # How it works:
 

@@ -31,7 +31,7 @@ namespace PaymentGateway.Common
 			_configuration = configuration;
 		}
 
-		public async Task<PaymentResponse> RequestBankPayment(PaymentRequest request, CancellationToken cancellationToken)
+		public async Task<PaymentResponse> RequestBankPayment(PaymentRequest request, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			if (request is null)
 			{

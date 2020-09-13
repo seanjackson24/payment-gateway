@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Xunit.Abstractions;
@@ -10,25 +11,26 @@ namespace PaymentGateway.Tests.IntegrationTests
 		private const string Database = "PaymentGateway.Database";
 		private const string BankSimulator = "PaymentGateway.BankSimulator";
 
-		protected readonly ITestOutputHelper Output;
-
-		protected EndToEndTestBase(ITestOutputHelper output)
-		{
-			Output = output;
-		}
-
-		private async Task StopContainer(string containerName)
+		private void StopContainer(string containerName)
 		{
 			var process = new Process();
 			process.StartInfo.FileName = "docker";
-			process.StartInfo.Arguments = $"stop ${containerName}";
+			process.StartInfo.Arguments = $"stop {containerName}";
 			process.StartInfo.CreateNoWindow = true;
 			process.StartInfo.UseShellExecute = false;
+			process.OutputDataReceived += (sender, data) =>
+			{
+				Console.WriteLine(data.Data);
+			};
+			process.StartInfo.RedirectStandardError = true;
+			process.ErrorDataReceived += (sender, data) =>
+			{
+				Console.WriteLine(data.Data);
+			};
 			process.Start();
-			await Task.Delay(1000);
 		}
 
-		private async Task StartContainer(string containerName)
+		private void StartContainer(string containerName)
 		{
 			var process = new Process();
 			process.StartInfo.FileName = "docker";
@@ -37,42 +39,48 @@ namespace PaymentGateway.Tests.IntegrationTests
 			process.StartInfo.UseShellExecute = false;
 			process.OutputDataReceived += (sender, data) =>
 			{
-				Output.WriteLine(data.Data);
+				Console.WriteLine(data.Data);
 			};
 			process.StartInfo.RedirectStandardError = true;
 			process.ErrorDataReceived += (sender, data) =>
 			{
-				Output.WriteLine(data.Data);
+				Console.WriteLine(data.Data);
 			};
 			process.Start();
-			await Task.Delay(1000);
 		}
-		protected async Task StartRedis()
+		protected void StartRedis()
 		{
-			await StartContainer(RedisContainer);
+			StartContainer(RedisContainer);
 		}
-		protected async Task StopRedis()
+		protected void StopRedis()
 		{
-			await StopContainer(RedisContainer);
-		}
-
-
-		protected async Task StartDatabase()
-		{
-			await StartContainer(Database);
-		}
-		protected async Task StopDatabase()
-		{
-			await StopContainer(Database);
+			StopContainer(RedisContainer);
 		}
 
-		protected async Task StartBank()
+
+		protected void StartDatabase()
 		{
-			await StartContainer(BankSimulator);
+			StartContainer(Database);
 		}
-		protected async Task StopBank()
+		protected void StopDatabase()
 		{
-			await StopContainer(BankSimulator);
+			StopContainer(Database);
+		}
+
+		protected void StartBank()
+		{
+			StartContainer(BankSimulator);
+		}
+		protected void StopBank()
+		{
+			StopContainer(BankSimulator);
+		}
+
+		protected void StartAll()
+		{
+			StartRedis();
+			StartBank();
+			StartDatabase();
 		}
 	}
 }

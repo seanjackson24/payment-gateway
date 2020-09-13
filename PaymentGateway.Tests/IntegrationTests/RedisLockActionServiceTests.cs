@@ -8,13 +8,14 @@ using Xunit;
 
 namespace PaymentGateway.Tests.IntegrationTests
 {
-	public class RedisLockActionServiceTests
+	public class RedisLockActionServiceTests : EndToEndTestBase
 	{
 		private readonly RedisLockActionService _service;
 		private const string RedisConnectionString = "127.0.0.1:6379";
 
 		public RedisLockActionServiceTests()
 		{
+			StartRedis();
 			IRedisClientsManager pool = new RedisManagerPool(RedisConnectionString);
 			_service = new RedisLockActionService(pool);
 		}
