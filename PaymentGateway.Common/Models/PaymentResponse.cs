@@ -7,7 +7,6 @@ namespace PaymentGateway.Common.Models
 		/// </summary>
 		public string PaymentId { get; set; }
 
-		// todo: convert to string
 		public PaymentStatus Status { get; set; }
 	}
 }
