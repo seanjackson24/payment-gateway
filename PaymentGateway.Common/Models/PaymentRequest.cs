@@ -4,14 +4,14 @@ namespace PaymentGateway.Common.Models
 {
 	public class PaymentRequest
 	{
-		public PaymentRequest(string paymentId, string cardNumber, string expiryDate, string cvv, string currencyCode, decimal paymentAmount)
+		public PaymentRequest(string paymentId, string cardNumber, string expiryDate, string cvv, string currencyCode, int paymentAmountInCents)
 		{
 			PaymentId = paymentId;
 			CardNumber = cardNumber;
 			ExpiryDate = expiryDate;
 			CVV = cvv;
 			CurrencyCode = currencyCode;
-			PaymentAmountInCents = paymentAmount;
+			PaymentAmountInCents = paymentAmountInCents;
 		}
 
 		/// <summary>
@@ -34,8 +34,7 @@ namespace PaymentGateway.Common.Models
 
 		[Required]
 		[Range(1, int.MaxValue)]
-		// TODO: int
-		public decimal PaymentAmountInCents { get; }
+		public int PaymentAmountInCents { get; }
 
 		[Required]
 		[EnumDataType(typeof(Iso4217CurrencyCode))]

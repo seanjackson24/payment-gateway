@@ -8,7 +8,7 @@ namespace PaymentGateway.Domain.DomainModels
 	{
 		public string PaymentId { get; set; }
 		public string MaskedCardNumber { get; set; }
-		public decimal PaymentAmountInCents { get; set; }
+		public int PaymentAmountInCents { get; set; }
 		public DateTime TimestampUtc { get; set; }
 		public int PaymentStatus { get; set; }
 		public string BankReference { get; set; }

@@ -15,13 +15,17 @@ A Payment Gateway API to interface between merchants and banks
 -   Run the bank simulator by browsing to /PaymentGateway.BankSimulator and running:
     `dotnet build`
     `dotnet run`
+    This will launch the project on https://localhost:5003
 -   Start up a redis instance, or clone the official redis docker image and start it:
-    ``
+    `TODO`
+    `docker start PaymentGateway.Redis`
 -   Start up a SQL Server instance, or clone a SQL Server docker image and run:
-    ``
+    `TODO`
+    `docker start PaymentGateway.Database`
 -   Prepare the database by running the script on the database:
-    ``
--   Populate the config files
+    `scripts/Scaffold Database.sql`
+-   Populate the config files:
+    ` "ConnectionStrings": { "PaymentGatewayDatabase": "", "Redis": "" }, "BankName": "Test Bank", "PaymentLockTimeoutMilliseconds": 1000, "PaymentLockMaxAgeMilliseconds": 86400000, "BankSimulator.Url": "https://localhost:5003/BankPayment"`
 
 # Run API Backend:
 
@@ -32,18 +36,26 @@ A Payment Gateway API to interface between merchants and banks
 
 # Make a request to the application:
 
+As an example using the command-line utility httpie (https://httpie.org/), you can simulate the below samples by running the commands:
+
 -   Accepted payment:
-    `http`
+    `http --verify=no --timeout=300 PUT https://localhost:5001/Payment PaymentId=10411bb3-d53d-440e-974c-ae65f4de559d CardNumber=4111111111111111 ExpiryDate=0222 CVV=123 PaymentAmount:=23 CurrencyCode=GBP`
 -   Declined Payment:
-    `http `
+    `http --verify=no --timeout=300 PUT https://localhost:5001/Payment PaymentId=4cf50653-bdfd-4af1-8825-e4b2dc57640b CardNumber=4111111111111112 ExpiryDate=0222 CVV=123 PaymentAmount:=23 CurrencyCode=GBP`
 -   Retrieve a payment:
-    `http `
+    `http --verify=no --timeout=300 GET https://localhost:5001/PaymentRetrieval PaymentId=4cf50653-bdfd-4af1-8825-e4b2dc57640b`
 
 Payment ID: This is a unique identifier for your payment. I recommend using a Guid for this.
 
 # Alternatively, use the API Client
 
 -   reference the project PaymentGateway.Common (which would be a NuGet package), and use a PaymentGatewayApiClient
+
+# docker
+
+From the root, in you can build the Bank Simulator and the main Payment Gateway API by running:
+`docker build --pull --rm -f "BankSimulator.Dockerfile" -t paymentgateway.banksimulator:latest "."`
+`docker build --pull --rm -f "Dockerfile" -t paymentgateway:latest "."`
 
 # How it works:
 

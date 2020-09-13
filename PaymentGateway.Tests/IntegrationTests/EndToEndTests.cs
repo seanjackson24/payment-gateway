@@ -6,13 +6,13 @@ namespace PaymentGateway.Tests.IntegrationTests
 	{
 		private async Task StartRedis()
 		{
-			// docker start 650b780b58a6
+			// docker start PaymentGateway.Redis
 
 			await Task.Delay(1000);
 		}
 		private async Task StopRedis()
 		{
-			// docker stop 650b780b58a6
+			// docker stop PaymentGateway.Redis
 
 			await Task.Delay(1000);
 		}
@@ -20,13 +20,13 @@ namespace PaymentGateway.Tests.IntegrationTests
 
 		private async Task StartDatabase()
 		{
-			// docker start 4b4e77063ce6
+			// docker start PaymentGateway.Database
 
 			await Task.Delay(1000);
 		}
 		private async Task StopDatabase()
 		{
-			// docker stop 4b4e77063ce6
+			// docker stop PaymentGateway.Database
 
 			await Task.Delay(1000);
 		}
@@ -35,13 +35,13 @@ namespace PaymentGateway.Tests.IntegrationTests
 
 		private async Task StartBank()
 		{
-			// dotnet run
+			// docker start PaymentGateway.BankSimulator
 
 			await Task.Delay(1000);
 		}
 		private async Task StopBank()
 		{
-			// TODO: put it in container
+			// docker stop PaymentGateway.BankSimulator
 
 			await Task.Delay(1000);
 		}
