@@ -17,9 +17,9 @@ namespace PaymentGateway.BankSimulator.Controllers
 			switch (request.CardNumber)
 			{
 				case AcceptedCardNumber:
-					return BankResponseModel.Accepted;
+					return BankResponseModel.Accepted();
 				case DeclinedCardNumber:
-					return BankResponseModel.Declined;
+					return BankResponseModel.Declined();
 				default:
 					throw new NotImplementedException();
 			}

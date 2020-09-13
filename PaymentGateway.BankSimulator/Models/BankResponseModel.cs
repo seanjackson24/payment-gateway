@@ -6,7 +6,8 @@ namespace PaymentGateway.BankSimulator.Models
 		public string BankReference { get; private set; }
 		public bool WasSuccessfulPayment { get; private set; }
 
-		public static readonly BankResponseModel Accepted = new BankResponseModel() { BankReference = Guid.NewGuid().ToString(), WasSuccessfulPayment = true };
-		public static readonly BankResponseModel Declined = new BankResponseModel() { BankReference = Guid.NewGuid().ToString(), WasSuccessfulPayment = false };
+		public static BankResponseModel Accepted() => new BankResponseModel() { BankReference = Guid.NewGuid().ToString(), WasSuccessfulPayment = true };
+
+		public static BankResponseModel Declined() => new BankResponseModel() { BankReference = Guid.NewGuid().ToString(), WasSuccessfulPayment = false };
 	}
 }
