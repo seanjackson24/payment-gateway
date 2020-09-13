@@ -6,18 +6,18 @@ namespace PaymentGateway.Tests.IntegrationTests
 {
 	public abstract class EndToEndTestBase
 	{
-		private const string redisContainer = "PaymentGateway.Redis";
-		private const string database = "PaymentGateway.Database";
+		private const string RedisContainer = "PaymentGateway.Redis";
+		private const string Database = "PaymentGateway.Database";
 		private const string BankSimulator = "PaymentGateway.BankSimulator";
 
-		protected readonly ITestOutputHelper _output;
+		protected readonly ITestOutputHelper Output;
 
 		protected EndToEndTestBase(ITestOutputHelper output)
 		{
-			_output = output;
+			Output = output;
 		}
 
-		private async Task Stopcontainer(string containerName)
+		private async Task StopContainer(string containerName)
 		{
 			var process = new Process();
 			process.StartInfo.FileName = "docker";
@@ -37,33 +37,33 @@ namespace PaymentGateway.Tests.IntegrationTests
 			process.StartInfo.UseShellExecute = false;
 			process.OutputDataReceived += (sender, data) =>
 			{
-				_output.WriteLine(data.Data);
+				Output.WriteLine(data.Data);
 			};
 			process.StartInfo.RedirectStandardError = true;
 			process.ErrorDataReceived += (sender, data) =>
 			{
-				_output.WriteLine(data.Data);
+				Output.WriteLine(data.Data);
 			};
 			process.Start();
 			await Task.Delay(1000);
 		}
 		protected async Task StartRedis()
 		{
-			await StartContainer(redisContainer);
+			await StartContainer(RedisContainer);
 		}
 		protected async Task StopRedis()
 		{
-			await Stopcontainer(redisContainer);
+			await StopContainer(RedisContainer);
 		}
 
 
 		protected async Task StartDatabase()
 		{
-			await StartContainer(database);
+			await StartContainer(Database);
 		}
 		protected async Task StopDatabase()
 		{
-			await Stopcontainer(database);
+			await StopContainer(Database);
 		}
 
 		protected async Task StartBank()
@@ -72,7 +72,7 @@ namespace PaymentGateway.Tests.IntegrationTests
 		}
 		protected async Task StopBank()
 		{
-			await Stopcontainer(BankSimulator);
+			await StopContainer(BankSimulator);
 		}
 	}
 }

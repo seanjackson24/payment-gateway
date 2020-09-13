@@ -6,18 +6,17 @@ using ServiceStack;
 using ServiceStack.Redis;
 using Xunit;
 
-namespace PaymentGateway.IntegrationTests
+namespace PaymentGateway.Tests.IntegrationTests
 {
 	public class RedisLockActionServiceTests
 	{
 		private readonly RedisLockActionService _service;
-		private const string redisConnectionString = "127.0.0.1:6379";
-		private readonly IRedisClientsManager _pool;
+		private const string RedisConnectionString = "127.0.0.1:6379";
 
 		public RedisLockActionServiceTests()
 		{
-			_pool = new RedisManagerPool(redisConnectionString);
-			_service = new RedisLockActionService(_pool);
+			IRedisClientsManager pool = new RedisManagerPool(RedisConnectionString);
+			_service = new RedisLockActionService(pool);
 		}
 
 

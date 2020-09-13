@@ -10,13 +10,13 @@ namespace PaymentGateway.Tests.IntegrationTests
 		{
 		}
 
-		[Fact]
-		public async Task StartAsync()
-		{
-			_output.WriteLine("hello");
-			await StartRedis();
-			await StopRedis();
-		}
+		//[Fact]
+		//public async Task StartAsync()
+		//{
+		//	Output.WriteLine("hello");
+		//	await StartRedis();
+		//	await StopRedis();
+		//}
 
 
 
