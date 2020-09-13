@@ -38,17 +38,30 @@ A Payment Gateway API to interface between merchants and banks
 
 # Make a request to the application:
 
-As an example using the command-line utility httpie (https://httpie.org/), you can simulate the below samples by running the commands:
+As an example using the command-line utility [httpie] (https://httpie.org/), you can simulate the below samples by running the commands:
 
 -   Accepted payment:
     `http --verify=no --timeout=300 PUT https://localhost:5001/Payment PaymentId=10411bb3-d53d-440e-974c-ae65f4de559d CardNumber=4111111111111111 ExpiryDate=0222 CVV=123 PaymentAmountInCents:=23.0 CurrencyCode=GBP`
+    You should get back a response such as:
+    `{ "paymentId": "10411bb3-d53d-440e-974c-ae65f4de559d", "status": "Accepted" }`
 -   Declined Payment:
     `http --verify=no --timeout=300 PUT https://localhost:5001/Payment PaymentId=4cf50653-bdfd-4af1-8825-e4b2dc57640b CardNumber=5105105105105100 ExpiryDate=0222 CVV=123 PaymentAmountInCents:=23 CurrencyCode=GBP`
+    This should then return a response such as:
+    `{ "paymentId": "4cf50653-bdfd-4af1-8825-e4b2dc57640b", "status": "Declined" }`
+-   A payment which already exists will give you an http 409, with the problem details:
+    `{ "PaymentId": [ "A payment with this unique ID already exists" ] }`
+-   If you manage to send two payments with the same ID at the same time, one will get a Status of Processing, and the results of this query should be discarded.
 -   Retrieve a payment:
     `http --verify=no --timeout=300 GET https://localhost:5001/PaymentRetrieval PaymentId=4cf50653-bdfd-4af1-8825-e4b2dc57640b`
 
-Note: the bank simulator will accept 4111111111111111, and decline all other valid credit card numbers.
-Payment ID: This is a unique identifier for your payment. I recommend using a Guid for this.
+# Payment Request Fields:
+
+PaymentId: This is a unique identifier for your payment. I recommend using a Guid for this.
+CardNumber: The bank simulator will accept 4111111111111111, and decline all other valid credit card numbers.
+ExpiryDate: A string of length 4.
+CVV: A string of length 3.
+PaymentAmountInCents: A positive integer, equal to the lowest possible unit of the Currency you are paying in.
+CurrencyCode: The three-letter, ISO4217 representation of the currency in which you are paying. For example, GBP, NZD, JPY
 
 # Alternatively, use the API Client
 
