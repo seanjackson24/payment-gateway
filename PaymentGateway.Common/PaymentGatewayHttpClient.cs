@@ -2,8 +2,10 @@
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using PaymentGateway.Common.Models;
 
@@ -20,13 +22,14 @@ namespace PaymentGateway.Common
 		private readonly HttpClient _httpClient;
 		private readonly JsonSerializerOptions _options = new JsonSerializerOptions
 		{
-			PropertyNameCaseInsensitive = true,
+			PropertyNameCaseInsensitive = true
 		};
 
 		private readonly IConfiguration _configuration;
 
 		public PaymentGatewayHttpClient(HttpClient httpClient, IConfiguration configuration)
 		{
+			_options.Converters.Add(new JsonStringEnumConverter());
 			_httpClient = httpClient;
 			_configuration = configuration;
 		}
@@ -42,10 +45,20 @@ namespace PaymentGateway.Common
 
 			var content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
 			var response = await _httpClient.PutAsync(url, content, cancellationToken);
+			try
+			{
+				response.EnsureSuccessStatusCode();
+				var result = await response.Content.ReadAsStringAsync();
 
-			var result = await response.Content.ReadAsStringAsync();
-
-			return JsonSerializer.Deserialize<PaymentResponse>(result, _options);
+				return JsonSerializer.Deserialize<PaymentResponse>(result, _options);
+			} 
+			catch (HttpRequestException ex)
+            {
+				ex.Data.Add("StatusCode", response.StatusCode);
+				var problem = await response.Content.ReadAsStringAsync();
+				ex.Data.Add("ProblemDetails", JsonSerializer.Deserialize<ProblemDetails>(problem));
+				throw;
+            }
 		}
 
 		public async Task<PaymentRetrievalResponse> RetrievePaymentDetails(PaymentRetrievalRequest request)
@@ -56,8 +69,25 @@ namespace PaymentGateway.Common
 			}
 			var baseUri = GetBaseUri();
 			var url = new Uri(baseUri, Urls.RetrievePaymentDetails);
-			var response = await _httpClient.GetStringAsync(url);
-			return JsonSerializer.Deserialize<PaymentRetrievalResponse>(response, _options);
+			var content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+			var httpRequest = new HttpRequestMessage(HttpMethod.Get, url);
+			httpRequest.Content = content;
+			var response = await _httpClient.SendAsync(httpRequest);
+			try
+			{
+				response.EnsureSuccessStatusCode();
+
+				var result = await response.Content.ReadAsStringAsync();
+
+				return JsonSerializer.Deserialize<PaymentRetrievalResponse>(result, _options);
+			}
+			catch (HttpRequestException ex)
+            {
+				ex.Data.Add("StatusCode", response.StatusCode);
+				var problem = await response.Content.ReadAsStringAsync();
+				ex.Data.Add("ProblemDetails", JsonSerializer.Deserialize<ProblemDetails>(problem));
+				throw;
+			}
 		}
 
 		private Uri GetBaseUri()
