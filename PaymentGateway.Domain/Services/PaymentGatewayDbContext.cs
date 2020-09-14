@@ -15,7 +15,18 @@ namespace PaymentGateway.Domain.Services
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			modelBuilder.Entity<Payment>()
+				.Property(p => p.PaymentId).HasMaxLength(100);
+			modelBuilder.Entity<Payment>()
+				.Property(p => p.MaskedCardNumber).HasMaxLength(20);
+			modelBuilder.Entity<Payment>()
+				.Property(p => p.BankReference).HasMaxLength(100);
+			modelBuilder.Entity<Payment>()
+				.Property(p => p.CardExpiryDate).HasMaxLength(5);
+			modelBuilder.Entity<Payment>()
+				.Property(p => p.CurrencyCode).HasMaxLength(3);
+			modelBuilder.Entity<Payment>()
 				.Property(p => p.PaymentStatus).HasConversion<int>();
+
 			base.OnModelCreating(modelBuilder);
 		}
 	}

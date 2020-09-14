@@ -46,7 +46,7 @@ namespace PaymentGateway.Domain.Services
 					PaymentAmountInCents = request.PaymentAmountInCents,
 					PaymentId = request.PaymentId,
 					TimestampUtc = _timeProvider.UtcNow(),
-					PaymentStatus = (int)bankResponse.Status,
+					PaymentStatus = bankResponse.Status,
 					BankReference = bankResponse.BankReference,
 					CardExpiryDate = request.ExpiryDate,
 					CurrencyCode = request.CurrencyCode

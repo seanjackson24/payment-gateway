@@ -5,6 +5,11 @@ namespace PaymentGateway.Common.Models
 	public class PaymentRetrievalRequest
 	{
 		[Required]
-		public string PaymentId { get; set; }
+		public string PaymentId { get; }
+
+		public PaymentRetrievalRequest(string paymentId)
+        {
+			PaymentId = paymentId;
+        }
 	}
 }

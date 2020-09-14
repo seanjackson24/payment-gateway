@@ -51,7 +51,7 @@ namespace PaymentGateway.Tests.IntegrationTests
 				var result = await client.RequestBankPayment(request, CancellationToken.None);
 
 				// TODO: constructor
-				var retrieval = new PaymentRetrievalRequest() { PaymentId = id };
+				var retrieval = new PaymentRetrievalRequest(id);
 				var retrievalResult = await client.RetrievePaymentDetails(retrieval);
 				Assert.Equal(PaymentStatus.Accepted, retrievalResult.PaymentStatus);
 				Assert.Equal("411111******1111", retrievalResult.MaskedCardNumber);
@@ -68,7 +68,7 @@ namespace PaymentGateway.Tests.IntegrationTests
 				var request = new PaymentRequest(id, DeclinedCardNumber, "0222", "123", CurrencyCode, 44);
 				var result = await client.RequestBankPayment(request, CancellationToken.None);
 
-				var retrieval = new PaymentRetrievalRequest() { PaymentId = id };
+				var retrieval = new PaymentRetrievalRequest(id);
 				var retrievalResult = await client.RetrievePaymentDetails(retrieval);
 				Assert.Equal(PaymentStatus.Declined, retrievalResult.PaymentStatus);
 				Assert.Equal("510510******5100", retrievalResult.MaskedCardNumber);
@@ -83,7 +83,7 @@ namespace PaymentGateway.Tests.IntegrationTests
 				var client = new PaymentGatewayHttpClient(httpClient, _configuration);
 				var id = Guid.NewGuid().ToString();
 
-				var retrieval = new PaymentRetrievalRequest() { PaymentId = id };
+				var retrieval = new PaymentRetrievalRequest(id);
 
 				var exception = await Assert.ThrowsAsync<HttpRequestException>(async () => await client.RetrievePaymentDetails(retrieval));
 				Assert.Equal(HttpStatusCode.NotFound, exception.Data["StatusCode"]);
@@ -92,7 +92,7 @@ namespace PaymentGateway.Tests.IntegrationTests
 
 
 		[Fact]
-		public async Task RequestSamePaymentAfterCompleted_ReturnsError()
+		public async Task RequestPayment_SamePaymentAfterCompleted_ReturnsError()
 		{
 			using (var httpClient = new HttpClient())
 			{

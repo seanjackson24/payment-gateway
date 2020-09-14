@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using PaymentGateway.Domain.DomainModels;
 
 namespace PaymentGateway.Domain.Services
@@ -32,7 +33,7 @@ namespace PaymentGateway.Domain.Services
 
 		public async Task<bool> PaymentExists(string paymentId, CancellationToken cancellationToken)
 		{
-			var payment = await _context.Payments.FindAsync(keyValues: new[] { paymentId }, cancellationToken: cancellationToken);
+			var payment = await _context.Payments.AsNoTracking().FirstOrDefaultAsync(p => p.PaymentId == paymentId, cancellationToken: cancellationToken);
 			return payment != null;
 		}
 	}
