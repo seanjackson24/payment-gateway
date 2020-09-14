@@ -8,6 +8,7 @@ using Xunit;
 
 namespace PaymentGateway.Tests.IntegrationTests
 {
+	[Collection("Non-Parallel Collection")]
 	public class RedisLockActionServiceTests : EndToEndTestBase
 	{
 		private readonly RedisLockActionService _service;

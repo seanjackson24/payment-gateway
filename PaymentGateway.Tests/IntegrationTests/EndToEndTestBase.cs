@@ -1,15 +1,36 @@
+using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading.Tasks;
-using Xunit.Abstractions;
+using System.Net;
+using System.Threading;
+using Xunit;
 
 namespace PaymentGateway.Tests.IntegrationTests
 {
-	public abstract class EndToEndTestBase
+    public abstract class EndToEndTestBase
 	{
 		private const string RedisContainer = "PaymentGateway.Redis";
-		private const string Database = "PaymentGateway.Database";
+		private const string Database = "paymentgateway.database";
 		private const string BankSimulator = "PaymentGateway.BankSimulator";
+
+		protected const string acceptedCard = "4111111111111111";
+		protected const string DeclinedCardNumber = "5105105105105100";
+		protected const string CurrencyCode = "GBP";
+		protected readonly IConfigurationRoot _configuration;
+
+		public EndToEndTestBase()
+        {
+			ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+			StartAll();
+
+			var initialData = new List<KeyValuePair<string, string>>()
+			{
+				new KeyValuePair<string, string>("PaymentGatewayRootUrl", "https://localhost:5001")
+			};
+			_configuration = new ConfigurationBuilder().AddInMemoryCollection(initialData).Build();
+		}
 
 		private void StopContainer(string containerName)
 		{
@@ -28,6 +49,7 @@ namespace PaymentGateway.Tests.IntegrationTests
 				Console.WriteLine(data.Data);
 			};
 			process.Start();
+			Thread.Sleep(5000);
 		}
 
 		private void StartContainer(string containerName)
@@ -47,6 +69,7 @@ namespace PaymentGateway.Tests.IntegrationTests
 				Console.WriteLine(data.Data);
 			};
 			process.Start();
+			Thread.Sleep(1000);
 		}
 		protected void StartRedis()
 		{
@@ -82,5 +105,10 @@ namespace PaymentGateway.Tests.IntegrationTests
 			StartBank();
 			StartDatabase();
 		}
+	}
+
+	[CollectionDefinition("Non-Parallel Collection", DisableParallelization = true)]
+	public class NonParallelCollectionDefinitionClass
+	{
 	}
 }

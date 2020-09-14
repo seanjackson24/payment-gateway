@@ -37,7 +37,8 @@ A Payment Gateway API to interface between merchants and banks
     You can either connect to the database using something like SQL Server Management Studio, or use sqlcmd directly on the container:
     > docker exec -it paymentgateway.database /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P yourStrong!Password
 -   Populate the config files:
-    > "ConnectionStrings": { "PaymentGatewayDatabase": "\<your connection string>", "Redis": "\<your redis connection string>" }, "BankSimulator.Url": "https://localhost:5003/BankPayment"
+    > "ConnectionStrings": { "PaymentGatewayDatabase": "\<your connection string>", "Redis": "\<your redis connection string>" }, "BankSimulator.Url": "\<Root URL of bank simulator>/BankPayment"
+-   Remember to check if the bank simulator is running on http or https!
 
 # Run API Backend:
 

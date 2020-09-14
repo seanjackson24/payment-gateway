@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -29,7 +30,14 @@ namespace PaymentGateway
 			services.AddSingleton<IRedisClientsManager>(c => new RedisManagerPool(Configuration.GetConnectionString("Redis")));
 			services.AddHttpClient<TestBankHttpClient>();
 			services.AddDbContext<PaymentGatewayDbContext>(options =>
-				options.UseSqlServer(Configuration.GetConnectionString("PaymentGatewayDatabase"))
+				options.UseSqlServer(Configuration.GetConnectionString("PaymentGatewayDatabase"),
+				sqlServerOptionsAction: sqlOptions =>
+				{
+					sqlOptions.EnableRetryOnFailure(
+					maxRetryCount: 10,
+					maxRetryDelay: TimeSpan.FromSeconds(10),
+					errorNumbersToAdd: null);
+				})
 			);
 
 			services.AddSingleton<ITimeProvider, TimeProvider>();

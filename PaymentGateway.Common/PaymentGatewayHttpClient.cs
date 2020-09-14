@@ -22,7 +22,7 @@ namespace PaymentGateway.Common
 		private readonly HttpClient _httpClient;
 		private readonly JsonSerializerOptions _options = new JsonSerializerOptions
 		{
-			PropertyNameCaseInsensitive = true
+			PropertyNameCaseInsensitive = true,
 		};
 
 		private readonly IConfiguration _configuration;
@@ -30,6 +30,7 @@ namespace PaymentGateway.Common
 		public PaymentGatewayHttpClient(HttpClient httpClient, IConfiguration configuration)
 		{
 			_options.Converters.Add(new JsonStringEnumConverter());
+			
 			_httpClient = httpClient;
 			_configuration = configuration;
 		}
@@ -55,8 +56,11 @@ namespace PaymentGateway.Common
 			catch (HttpRequestException ex)
             {
 				ex.Data.Add("StatusCode", response.StatusCode);
-				var problem = await response.Content.ReadAsStringAsync();
-				ex.Data.Add("ProblemDetails", JsonSerializer.Deserialize<ProblemDetails>(problem));
+				if (response.StatusCode != System.Net.HttpStatusCode.InternalServerError)
+				{
+					var problem = await response.Content.ReadAsStringAsync();
+					ex.Data.Add("ProblemDetails", JsonSerializer.Deserialize<ProblemDetails>(problem));
+				}
 				throw;
             }
 		}
@@ -84,8 +88,11 @@ namespace PaymentGateway.Common
 			catch (HttpRequestException ex)
             {
 				ex.Data.Add("StatusCode", response.StatusCode);
-				var problem = await response.Content.ReadAsStringAsync();
-				ex.Data.Add("ProblemDetails", JsonSerializer.Deserialize<ProblemDetails>(problem));
+				if (response.StatusCode != System.Net.HttpStatusCode.InternalServerError)
+				{
+					var problem = await response.Content.ReadAsStringAsync();
+					ex.Data.Add("ProblemDetails", JsonSerializer.Deserialize<ProblemDetails>(problem));
+				}
 				throw;
 			}
 		}

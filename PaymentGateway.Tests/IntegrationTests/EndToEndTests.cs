@@ -1,37 +1,17 @@
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using PaymentGateway.Common;
 using PaymentGateway.Common.Models;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace PaymentGateway.Tests.IntegrationTests
 {
+	[Collection("Non-Parallel Collection")]
 	public class EndToEndTests : EndToEndTestBase
 	{
-		private const string acceptedCard = "4111111111111111";
-		private const string DeclinedCardNumber = "5105105105105100";
-		private const string CurrencyCode = "GBP";
-		private readonly IConfigurationRoot _configuration;
-
-		public EndToEndTests()
-		{
-			ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
-			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-			StartAll();
-
-			var initialData = new List<KeyValuePair<string, string>>()
-			{
-				new KeyValuePair<string, string>("PaymentGatewayRootUrl", "https://localhost:5001")
-			};
-			_configuration = new ConfigurationBuilder().AddInMemoryCollection(initialData).Build();
-		}
-
 		[Fact]
 		public async Task AcceptedCard()
 		{
@@ -75,7 +55,6 @@ namespace PaymentGateway.Tests.IntegrationTests
 				var retrievalResult = await client.RetrievePaymentDetails(retrieval);
 				Assert.Equal(PaymentStatus.Accepted, retrievalResult.PaymentStatus);
 				Assert.Equal("411111******1111", retrievalResult.MaskedCardNumber);
-
 			}
 		}
 
@@ -198,12 +177,53 @@ namespace PaymentGateway.Tests.IntegrationTests
 			using (var httpClient = new HttpClient())
 			{
 				var client = new PaymentGatewayHttpClient(httpClient, _configuration);
-				var id = Guid.NewGuid().ToString();
 				var request = new PaymentRequest("", acceptedCard, "0222", "123", CurrencyCode, 44);
 				var exception = await Assert.ThrowsAsync<HttpRequestException>(async () => await client.RequestBankPayment(request, CancellationToken.None));
 				Assert.Equal(HttpStatusCode.BadRequest, exception.Data["StatusCode"]);
 			}
 		}
+
+		[Fact]
+		public async Task RequestPayment_RedisIsDown_InternalServerError()
+		{
+			StopRedis();
+			using (var httpClient = new HttpClient())
+			{
+				var client = new PaymentGatewayHttpClient(httpClient, _configuration);
+				var id = Guid.NewGuid().ToString();
+				var request = new PaymentRequest(id, acceptedCard, "0222", "123", CurrencyCode, 44);
+				var exception = await Assert.ThrowsAsync<HttpRequestException>(async () => await client.RequestBankPayment(request, CancellationToken.None));
+				Assert.Equal(HttpStatusCode.InternalServerError, exception.Data["StatusCode"]);
+			}
+		}
+
+		[Fact]
+		public async Task RequestPayment_BankIsDown_InternalServerError()
+		{
+			StopBank();
+			using (var httpClient = new HttpClient())
+			{
+				var client = new PaymentGatewayHttpClient(httpClient, _configuration);
+				var id = Guid.NewGuid().ToString();
+				var request = new PaymentRequest(id, acceptedCard, "0222", "123", CurrencyCode, 44);
+				var exception = await Assert.ThrowsAsync<HttpRequestException>(async () => await client.RequestBankPayment(request, CancellationToken.None));
+				Assert.Equal(HttpStatusCode.InternalServerError, exception.Data["StatusCode"]);
+			}
+		}
+		[Fact]
+		public async Task RequestPayment_SqlIsDown_InternalServerError()
+		{
+			StopDatabase();
+			using (var httpClient = new HttpClient())
+			{
+				var client = new PaymentGatewayHttpClient(httpClient, _configuration);
+				var id = Guid.NewGuid().ToString();
+				var request = new PaymentRequest(id, acceptedCard, "0222", "123", CurrencyCode, 44);
+				var exception = await Assert.ThrowsAsync<HttpRequestException>(async () => await client.RequestBankPayment(request, CancellationToken.None));
+				Assert.Equal(HttpStatusCode.InternalServerError, exception.Data["StatusCode"]);
+			}
+		}
+
 		// unhappy path: request two payments at once
 	}
 }
