@@ -5,7 +5,6 @@ A Payment Gateway API to interface between merchants and banks
 # Prerequisites:
 
 -   dotnet core SDK 3.1 or later (https://dotnet.microsoft.com/download/dotnet-core/3.1)
--   nodeJS latest LTS or later (https://nodejs.org/en/download/)
 
 -   Ensure the local development certificate is trusted by running:
     > dotnet dev-certs https --trust
@@ -52,7 +51,7 @@ A Payment Gateway API to interface between merchants and banks
 
 # Make a request to the application:
 
-As an example using the command-line utility [httpie] (https://httpie.org/), you can simulate the below samples by running the commands:
+As an example using the command-line utility [httpie](https://httpie.org/), you can simulate the below samples by running the commands:
 
 -   Accepted payment:
 

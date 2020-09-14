@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using PaymentGateway.Common;
 using PaymentGateway.Common.Models;
+using ServiceStack;
 using Xunit;
 
 namespace PaymentGateway.Tests.IntegrationTests
@@ -223,7 +224,5 @@ namespace PaymentGateway.Tests.IntegrationTests
 				Assert.Equal(HttpStatusCode.InternalServerError, exception.Data["StatusCode"]);
 			}
 		}
-
-		// unhappy path: request two payments at once
-	}
+    }
 }

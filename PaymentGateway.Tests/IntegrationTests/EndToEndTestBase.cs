@@ -24,7 +24,7 @@ namespace PaymentGateway.Tests.IntegrationTests
 			ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
 			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 			StartAll();
-
+			// Make sure you check the bank simulator URL - particularly if you are running it in a container vs dotnet run
 			var initialData = new List<KeyValuePair<string, string>>()
 			{
 				new KeyValuePair<string, string>("PaymentGatewayRootUrl", "https://localhost:5001")
